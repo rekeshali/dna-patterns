@@ -1,3 +1,6 @@
+# COCS 505 - Project C
+# Group 10: rali1, bterry7, twall4, cbrice1
+# Correlate disease frequency with matches in DNA sequences.
 import sys
 import time
 import numpy as np
@@ -6,7 +9,6 @@ import pandas as pd
 
 # (bterry7) Read in and parse the data into dictionary
 # Ensure that the expected number of arguments were input
-
 # Analysis:
 # No loops, just reading and storing data
 # Timing: O(1)
