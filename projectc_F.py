@@ -83,6 +83,9 @@ else:
     # (rali1) ############################################################################
     ######################################################################################
     # Removes empty subdicts within a dict
+    # my_func()
+    # Analysis:
+    # For loop is O(n)
     #Timing: O(n) (Cbrice1)
     def dictClean(dict):
         keys = list(dict.keys())
@@ -91,6 +94,12 @@ else:
                 dict.pop(key)
 
     # Adds a patient ID to permissable categories for a sequence
+    # my_func()
+    # Analysis:
+    # Nested for loop.
+    # First for loop is O(n)
+    # Second for loop iterates O(n) per n in the first.
+    # which is O(n)
     #Timing: O(n^2) (Cbrice1)
     def addPID(pid, emr, matches, size, combo):
         matches[size][combo]['all'].append(pid)
@@ -101,6 +110,8 @@ else:
 
     ndna = len(dna[pids[0]])
     # Every possible match size is initialized
+    # Analysis:
+    # For loop is O(n)
     #Timing: O(n) (Cbrice1)
     matches = {}
     for size in range(3,ndna+1):
@@ -113,6 +124,15 @@ else:
 
     start = time.time()
     # All IDs except last one will be forward looking for matches
+    # Analysis:
+    # 4 nested for loops.
+    # First for loop is O(n)
+    # Second for loop iterates O(n) per n in the first.
+    # which is O(n)
+    #Third for loop iterates O(n) per n in the second.
+    #which is O(n^2)
+    #Fourth for loop iterated O(n) per n in the third
+    #which is O(n^3)
     #Timing: O(n^4) (Cbrice1)
     for (p,pid1) in enumerate(pids[:-1]):
         sizesLeft = sizes2Match.copy()
