@@ -15,7 +15,7 @@ import pandas as pd
 if len(sys.argv) != 3:
     print('Usage: ./projectc.py <URL> <output file or ->')
 
-else:
+else:   
     # Set flags and information for writing the data to text file or console later
     if str(sys.argv[2]) == "-":
         outputToFileFlag = 0
@@ -26,7 +26,9 @@ else:
     # Try to read in data and report exception as needed
     # Analysis:
     # While there is a loop, it's not for iteration, just validation
-    # Timing: O(1)
+    # However, reading in the data will depend on the size of the data, increasing linearly with the size (number of samples) of the .json file
+    # Validating the input and inputting/outputting is a constant time operation
+    # Timing: O(n)
     while True:
         try:
             sourceData = pd.read_json(sys.argv[1])
@@ -41,6 +43,7 @@ else:
         
     # Reformat Pandas into dictionary where
     # Analysis:
+    # Converting to list depends on the number of patient IDs
     # 1 loop over the indexes (patient IDs). Loop is O(n)
     # Timing: O(n)
     pids = list(sourceData.index) # patient IDs
@@ -54,19 +57,23 @@ else:
     # (bterry7 & rali1)
     # Create a dictionary of diseases, for reference
     # Second number will be total number of people with that disease to be used in correlation calcualtions
+    diseaseCodes = "abcdeABCD"
+    diseaseNames = ["Pancreatic cancer", "Breast cancer", "Lung cancer","Lymphoma", "Leukemia", "Gastro-reflux", \
+                    "Hyperlipidemia", "High blood pressure", "Macular degeneration (any degree)"] 
+    
+    # Analysis:
+    # Loop over the number of possible diseases. If this value is fixed, then it is a fixed time.
+    # This framework allows for easy addition of diseases; if the number of disease is a variable, the runtime becomes O(n). That is not the case for this project
+    # Timing: O(1)
+    diseases = {}
+    for i in range(len(diseaseCodes)):
+        diseases[diseaseCodes[i]] = [diseaseNames[i], 0]
+    
     # Analysis:
     # Nested for loop--every disease for every patient.
     # First for loop is O(n)
     # Second for loop iterates O(n) per n in the first; this n is likely to be smaller though
     # Timing: O(n^2). 
-    diseaseCodes = "abcdeABCD"
-    diseaseNames = ["Pancreatic cancer", "Breast cancer", "Lung cancer","Lymphoma", "Leukemia", "Gastro-reflux", \
-                    "Hyperlipidemia", "High blood pressure", "Macular degeneration (any degree)"] 
-    
-    diseases = {}
-    for i in range(len(diseaseCodes)):
-        diseases[diseaseCodes[i]] = [diseaseNames[i], 0]
-
     for pid in pids:
         curDisease = emr[pid]
         for code in curDisease:
@@ -190,13 +197,16 @@ else:
                      
     #(twall4)#(end)############################################################################
     ###########################################################################################
-
+    
+    
     # (bterry7) (set up to be written, did not create text)
     # Print Report, to file or console based on original input
     # Analysis:
     # Write to file. No looping or recursion. Will create file in current directory, so no searching
+    # Time to write will depend on size of output string. However, this prints based on matches, not number of samples.
+    # If the length of the DNA sequence is known and constant regardless of sample size, there is a set upper limit for this timing that does not change with sample size
+    # So, while it can run faster, there is a definitive set maximum time that does not scale with the number of samples (assuming the DNA sequence lenght is set)
     # Timing: O(1)
-    #outputText = 'test'
     if outputToFileFlag:
         print(fileName)
         f = open(fileName,'w')
