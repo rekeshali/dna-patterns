@@ -6,7 +6,8 @@ import pandas as pd
 # Ensure that the expected number of arguments were input
 
 # Analysis:
-# No loops, just reading and storing data
+# No loops
+# Taking user input is a constant time operation
 # Timing: O(1)
 if len(sys.argv) != 3:
     print('Usage: ./projectc.py <URL> <output file or ->')
@@ -22,7 +23,9 @@ else:
     # Try to read in data and report exception as needed
     # Analysis:
     # While there is a loop, it's not for iteration, just validation
-    # Timing: O(1)
+    # However, reading in the data will depend on the size of the data, increasing linearly with the size (number of samples) of the .json file
+    # Validating the input and inputting/outputting is a constant time operation
+    # Timing: O(n)
     while True:
         try:
             sourceData = pd.read_json(sys.argv[1])
@@ -77,6 +80,9 @@ else:
     # Print Report, to file or console based on original input
     # Analysis:
     # Write to file. No looping or recursion. Will create file in current directory, so no searching
+    # Time to write will depend on size of output string. However, this prints based on matches, not number of samples.
+    # If the length of the DNA sequence is known and constant regardless of sample size, there is a set upper limit for this timing that does not change with sample size
+    # So, while it can run faster, there is a definitive set maximum time that does not scale with the number of samples (assuming the DNA sequence lenght is set)
     # Timing: O(1)
     if outputToFileFlag:
         print(fileName)
