@@ -15,7 +15,7 @@ import pandas as pd
 if len(sys.argv) != 3:
     print('Usage: ./projectc.py <URL> <output file or ->')
 
-else:
+else:   
     # Set flags and information for writing the data to text file or console later
     if str(sys.argv[2]) == "-":
         outputToFileFlag = 0
@@ -26,7 +26,9 @@ else:
     # Try to read in data and report exception as needed
     # Analysis:
     # While there is a loop, it's not for iteration, just validation
-    # Timing: O(1)
+    # However, reading in the data will depend on the size of the data, increasing linearly with the size (number of samples) of the .json file
+    # Validating the input and inputting/outputting is a constant time operation
+    # Timing: O(n)
     while True:
         try:
             sourceData = pd.read_json(sys.argv[1])
@@ -41,12 +43,13 @@ else:
         
     # Reformat Pandas into dictionary where
     # Analysis:
+    # Converting to list depends on the number of patient IDs
     # 1 loop over the indexes (patient IDs). Loop is O(n)
     # Timing: O(n)
     pids = list(sourceData.index) # patient IDs
     emr = {}
     dna = {}
-
+    
     for (p,pid) in enumerate(pids):
         emr[pid] = list(sourceData.values[p])[0]
         dna[pid] = list(sourceData.values[p])[1]
@@ -54,19 +57,23 @@ else:
     # (bterry7 & rali1)
     # Create a dictionary of diseases, for reference
     # Second number will be total number of people with that disease to be used in correlation calcualtions
+    diseaseCodes = "abcdeABCD"
+    diseaseNames = ["Pancreatic cancer", "Breast cancer", "Lung cancer","Lymphoma", "Leukemia", "Gastro-reflux", \
+                    "Hyperlipidemia", "High blood pressure", "Macular degeneration (any degree)"] 
+    
+    # Analysis:
+    # Loop over the number of possible diseases. If this value is fixed, then it is a fixed time.
+    # This framework allows for easy addition of diseases; if the number of disease is a variable, the runtime becomes O(n). That is not the case for this project
+    # Timing: O(1)
+    diseases = {}
+    for i in range(len(diseaseCodes)):
+        diseases[diseaseCodes[i]] = [diseaseNames[i], 0]
+    
     # Analysis:
     # Nested for loop--every disease for every patient.
     # First for loop is O(n)
     # Second for loop iterates O(n) per n in the first; this n is likely to be smaller though
     # Timing: O(n^2). 
-    diseaseCodes = "abcdeABCD"
-    diseaseNames = ["Pancreatic cancer", "Breast cancer", "Lung cancer","Lymphoma", "Leukemia", "Gastro-reflux", \
-                    "Hyperlipidemia", "High blood pressure", "Macular degeneration (any degree)"] 
-    
-    diseases = {}
-    for i in range(len(diseaseCodes)):
-        diseases[diseaseCodes[i]] = [diseaseNames[i], 0]
-
     for pid in pids:
         curDisease = emr[pid]
         for code in curDisease:
@@ -148,13 +155,58 @@ else:
     ######################################################################################
     #(rali1)#(end)########################################################################
     ######################################################################################
-
+    
+    
+    #(twall4)#(start)#####################################################################
+    #This portion of code  calculates the percantages for correlations and formats data 
+    #for use in the report or to be printed  
+    
+    #intializes the outputText variable to be populated with the "report" formatted information
+    outputText ='' 
+    
+    #Nested for loops --
+    # 3rd (most inner) loop: operates on n-#matches --> time = O(n)
+    # 2nd (middle) loop: operates on n-#diseases and 3rd loop --> time = O(n^2)
+    # 1st (outer) loop: operates on n-#DNAsequences and inner loops --> time = O(n^3)
+    # total time = O(n^3)
+    #Nested for loops sort down through the nested dictionaries in "matches"
+    for key, seq in sorted(matches.items()):
+        for dna, sick in sorted(seq.items()):
+            #places the DNA sequnces into outputText variable
+            outputText = outputText + ("{}:\n".format(dna))
+            for condition, afflictID in sorted(sick.items()):        
+            #Calculates the percentage of afflicted patients vs total number of patients 
+            #for correlation message
+                per = len(afflictID)/len(pids) 
+                if per >= .40 and per < .60 :
+                    cor = "Slightly Correlated"
+                elif per >= .60 and per < .80 :
+                    cor = "Moderately Correlated"
+                elif per >= .80:
+                    cor = "Significantly Correlated"
+                else:
+                    cor = ' '
+                    
+                #builds new dictionary for code-disease matching
+                switcher = { "a":"Pancreatic cancer", "b":"Breast cancer", "c":"Lung cancer", 
+                             "d":" Lymphoma", "e":"Leukemia", "A":"Gastro-reflux", "B":"Hyperlipidemia", 
+                             "C":"High blood pressure", "D":"Macular degeneration (any degree)",
+                             "all":"All IDs with sequence" } 
+                #Further appends the disease, correlation strength, and ID of afflicted patients to the outputText
+                outputText = outputText + (' {}: {}\n    {}\n'.format(switcher[condition], cor, afflictID))
+                     
+    #(twall4)#(end)############################################################################
+    ###########################################################################################
+    
+    
     # (bterry7) (set up to be written, did not create text)
     # Print Report, to file or console based on original input
     # Analysis:
     # Write to file. No looping or recursion. Will create file in current directory, so no searching
+    # Time to write will depend on size of output string. However, this prints based on matches, not number of samples.
+    # If the length of the DNA sequence is known and constant regardless of sample size, there is a set upper limit for this timing that does not change with sample size
+    # So, while it can run faster, there is a definitive set maximum time that does not scale with the number of samples (assuming the DNA sequence lenght is set)
     # Timing: O(1)
-    outputText = 'test'
     if outputToFileFlag:
         print(fileName)
         f = open(fileName,'w')
