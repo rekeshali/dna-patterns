@@ -53,7 +53,7 @@ else:
     for (p,pid) in enumerate(pids):
         emr[pid] = list(sourceData.values[p])[0]
         dna[pid] = list(sourceData.values[p])[1]
-
+    
     # (bterry7 & rali1)
     # Create a dictionary of diseases, for reference
     # Second number will be total number of people with that disease to be used in correlation calcualtions
@@ -78,7 +78,7 @@ else:
         curDisease = emr[pid]
         for code in curDisease:
             diseases[code][1] += 1
-   
+    
     ######################################################################################
     # (rali1) ############################################################################
     ######################################################################################
@@ -193,32 +193,40 @@ else:
     # 2nd (middle) loop: operates on n-#diseases and 3rd loop --> time = O(n^2)
     # 1st (outer) loop: operates on n-#DNAsequences and inner loops --> time = O(n^3)
     # total time = O(n^3)
+    
     #Nested for loops sort down through the nested dictionaries in "matches"
     for key, seq in sorted(matches.items()):
         for dna, sick in sorted(seq.items()):
             #places the DNA sequnces into outputText variable
             outputText = outputText + ("{}:\n".format(dna))
             for condition, afflictID in sorted(sick.items()):        
-            #Calculates the percentage of afflicted patients vs total number of patients 
-            #for correlation message
-                per = len(afflictID)/len(pids) 
-                if per >= .40 and per < .60 :
-                    cor = "Slightly Correlated"
-                elif per >= .60 and per < .80 :
-                    cor = "Moderately Correlated"
-                elif per >= .80:
-                    cor = "Significantly Correlated"
+                 
+                #creates a dictionary to switch from disease code to full name
+                switch = { "a":"Pancreatic cancer", "b":"Breast cancer", "c":"Lung cancer",
+                           "d":" Lymphoma", "e":"Leukemia", "A":"Gastro-reflux", "B":"Hyperlipidemia",
+                           "C":"High blood pressure", "D":"Macular degeneration (any degree)",
+                         "all":"All IDs with sequence" }
+                
+                #calculates the correlation percentage, makes use of the diseases dictionary defined earlier in the code
+                if condition != 'all':
+                    per = len(afflictID)/diseases[condition][1]
+                    if per >= .40 and per < .60 :
+                        cor = "Slightly Correlated"
+                    elif per >= .60 and per < .80 :
+                        cor = "Moderately Correlated"
+                    elif per >= .80:
+                        cor = "Significantly Correlated"
+                    else:
+                        cor = ''
+                
+                #produced formatted output depending on wether a correlation exists or if the entry specifies the "All IDs with seq" option
+                if condition  == "all":
+                    outputText = outputText + (' {}: \n    {}\n'.format(switch[condition], afflictID))
+                elif cor == '':
+                    outputText = outputText
                 else:
-                    cor = ' '
-                    
-                #builds new dictionary for code-disease matching
-                switcher = { "a":"Pancreatic cancer", "b":"Breast cancer", "c":"Lung cancer", 
-                             "d":" Lymphoma", "e":"Leukemia", "A":"Gastro-reflux", "B":"Hyperlipidemia", 
-                             "C":"High blood pressure", "D":"Macular degeneration (any degree)",
-                             "all":"All IDs with sequence" } 
-                #Further appends the disease, correlation strength, and ID of afflicted patients to the outputText
-                outputText = outputText + (' {}: {}\n    {}\n'.format(switcher[condition], cor, afflictID))
-                     
+                    outputText = outputText + (' {}: {}\n   {}\n'.format(switch[condition], cor, afflictID))
+
     #(twall4)#(end)############################################################################
     ###########################################################################################
     
