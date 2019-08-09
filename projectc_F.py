@@ -96,11 +96,8 @@ else:
     # Adds a patient ID to permissable categories for a sequence
     # my_func()
     # Analysis:(Cbrice1)
-    # Nested for loop.
-    # First for loop is O(n)
-    # Second for loop iterates O(n) per n in the first.
-    # which is O(n)
-    #Timing: O(n^2) end (Cbrice1)
+    # For loop is O(n) where n is num diseases of patient
+    #Timing: O(n) end (Cbrice1)
     def addPID(pid, emr, matches, size, combo):
         matches[size][combo]['all'].append(pid)
         for diseaseCode in emr:
@@ -111,7 +108,7 @@ else:
     ndna = len(dna[pids[0]])
     # Every possible match size is initialized
     # Analysis:(Cbrice1)
-    # For loop is O(n)
+    # For loop is O(n) where n is possible sizes
     #Timing: O(n) (Cbrice1)
     matches = {}
     for size in range(3,ndna+1):
@@ -184,9 +181,9 @@ else:
     
     #Nested for loops --
     # 3rd (most inner) loop: operates on n-#matches --> time = O(n)
-    # 2nd (middle) loop: operates on n-#diseases and 3rd loop --> time = O(n^2)
-    # 1st (outer) loop: operates on n-#DNAsequences and inner loops --> time = O(n^3)
-    # total time = O(n^3)
+    # 2nd (middle) loop: operates on m-#diseases and 3rd loop --> time = O(m)
+    # 1st (outer) loop: operates on k-#DNAsequences and inner loops --> time = O(k)
+    # total time = O(n*m*k)
     
     #Nested for loops sort down through the nested dictionaries in "matches"
     for key, seq in sorted(matches.items()):
