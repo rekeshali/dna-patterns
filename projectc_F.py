@@ -221,7 +221,7 @@ else:
                 
                 #produced formatted output depending on wether a correlation exists or if the entry specifies the "All IDs with seq" option
                 if condition  == "all":
-                    outputText = outputText + (' {}: \n    {}\n'.format(switch[condition], afflictID))
+                    outputText = outputText + (' {}: \n   {}\n'.format(switch[condition], afflictID))
                 elif cor == '':
                     outputText = outputText
                 else:
