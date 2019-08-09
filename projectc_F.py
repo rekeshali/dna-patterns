@@ -198,18 +198,19 @@ else:
     for key, seq in sorted(matches.items()):
         for dna, sick in sorted(seq.items()):
             #places the DNA sequnces into outputText variable
-            outputText = outputText + ("{}:\n".format(dna))
+            outputText = outputText + ("{}:\n".format(dna))            
             for condition, afflictID in sorted(sick.items()):        
-                 
+                #sets up collection of all patients with DNA sequence
+                allID = sick["all"]    
                 #creates a dictionary to switch from disease code to full name
                 switch = { "a":"Pancreatic cancer", "b":"Breast cancer", "c":"Lung cancer",
                            "d":" Lymphoma", "e":"Leukemia", "A":"Gastro-reflux", "B":"Hyperlipidemia",
                            "C":"High blood pressure", "D":"Macular degeneration (any degree)",
                          "all":"All IDs with sequence" }
-                
+                                                           
                 #calculates the correlation percentage, makes use of the diseases dictionary defined earlier in the code
                 if condition != 'all':
-                    per = len(afflictID)/diseases[condition][1]
+                    per = len(afflictID)/len(allID)
                     if per >= .40 and per < .60 :
                         cor = "Slightly Correlated"
                     elif per >= .60 and per < .80 :
@@ -218,15 +219,16 @@ else:
                         cor = "Significantly Correlated"
                     else:
                         cor = ''
+                else:
+                    cor = ''
                 
                 #produced formatted output depending on wether a correlation exists or if the entry specifies the "All IDs with seq" option
-                if condition  == "all":
-                    outputText = outputText + (' {}: \n   {}\n'.format(switch[condition], afflictID))
-                elif cor == '':
+                if cor == '':
                     outputText = outputText
                 else:
                     outputText = outputText + (' {}: {}\n   {}\n'.format(switch[condition], cor, afflictID))
-
+            outputText = outputText + ('{}: \n   {}\n'.format(switch["all"], allID))  
+    
     #(twall4)#(end)############################################################################
     ###########################################################################################
     
