@@ -125,15 +125,11 @@ else:
     start = time.time()
     # All IDs except last one will be forward looking for matches
     # Analysis:(Cbrice1)
-    # 4 nested for loops.
-    # First for loop is O(n)
-    # Second for loop iterates O(n) per n in the first.
-    # which is O(n)
-    #Third for loop iterates O(n) per n in the second.
-    #which is O(n^2)
-    #Fourth for loop iterated O(n) per n in the third
-    #which is O(n^3)
-    #Timing: O(n^4) end (Cbrice1)
+    # Nested for loop that scales with n patients.
+    # First loop iterates first (n-1) pids is O(n)
+    # Second for loop iterates (n-1) pids after the first which is O(n) per n in the first.
+    # Other loops (index and size) do not scale with # of patients so are O(1)
+    #Timing: O(n^2) end (Cbrice1)
     for (p,pid1) in enumerate(pids[:-1]):
         sizesLeft = sizes2Match.copy()
         # Check sequences at indexes that can fit remaining sizes to check
@@ -174,8 +170,6 @@ else:
     # Remove empty dicts (unmatched sizes)
     dictClean(matches)
     end = time.time()
-    print("# of Patients: %i" % (len(pids)))
-    print("Runtime: %5.3fs" % (end-start))    
     ######################################################################################
     #(rali1)#(end)########################################################################
     ######################################################################################
@@ -209,6 +203,7 @@ else:
                          "all":"All IDs with sequence" }
                                                            
                 #calculates the correlation percentage, makes use of the diseases dictionary defined earlier in the code
+                # Correlation = (ppl with disease & DNA)/(ppl with DNA)
                 if condition != 'all':
                     per = len(afflictID)/len(allID)
                     if per >= .40 and per < .60 :
@@ -226,8 +221,14 @@ else:
                 if cor == '':
                     outputText = outputText
                 else:
-                    outputText = outputText + (' {}: {}\n   {}\n'.format(switch[condition], cor, afflictID))
-            outputText = outputText + ('{}: \n   {}\n'.format(switch["all"], allID))  
+                    stringID = ''
+                    for pid in afflictID:
+                        stringID += str(pid) + ", "
+                    outputText = outputText + ('\t{}: {}\n\t\t{}\n'.format(switch[condition], cor, stringID[:-2]))
+            stringID = ''
+            for pid in allID:
+                stringID += str(pid) + ", "
+            outputText = outputText + ('\t{}: \n\t\t{}\n'.format(switch["all"], stringID[:-2]))  
     
     #(twall4)#(end)############################################################################
     ###########################################################################################
@@ -248,3 +249,7 @@ else:
         f.close()
     else:
         print(outputText)
+
+    print("# of Patients: %i" % (len(pids)))
+    print("Runtime: %5.3fs" % (end-start))    
+
