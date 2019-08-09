@@ -6,7 +6,7 @@ import time
 import numpy as np
 import pandas as pd
 
-
+# (Cbrice 1): Big O analysis for Rekesh's section 
 # (bterry7) Read in and parse the data into dictionary
 # Ensure that the expected number of arguments were input
 # Analysis:
@@ -84,9 +84,9 @@ else:
     ######################################################################################
     # Removes empty subdicts within a dict
     # my_func()
-    # Analysis:
+    # Time Analysis:(Cbrice1)
     # For loop is O(n)
-    #Timing: O(n) (Cbrice1)
+    #Timing: O(n) end (Cbrice1)
     def dictClean(dict):
         keys = list(dict.keys())
         for key in keys:
@@ -95,12 +95,12 @@ else:
 
     # Adds a patient ID to permissable categories for a sequence
     # my_func()
-    # Analysis:
+    # Analysis:(Cbrice1)
     # Nested for loop.
     # First for loop is O(n)
     # Second for loop iterates O(n) per n in the first.
     # which is O(n)
-    #Timing: O(n^2) (Cbrice1)
+    #Timing: O(n^2) end (Cbrice1)
     def addPID(pid, emr, matches, size, combo):
         matches[size][combo]['all'].append(pid)
         for diseaseCode in emr:
@@ -110,7 +110,7 @@ else:
 
     ndna = len(dna[pids[0]])
     # Every possible match size is initialized
-    # Analysis:
+    # Analysis:(Cbrice1)
     # For loop is O(n)
     #Timing: O(n) (Cbrice1)
     matches = {}
@@ -124,7 +124,7 @@ else:
 
     start = time.time()
     # All IDs except last one will be forward looking for matches
-    # Analysis:
+    # Analysis:(Cbrice1)
     # 4 nested for loops.
     # First for loop is O(n)
     # Second for loop iterates O(n) per n in the first.
@@ -133,7 +133,7 @@ else:
     #which is O(n^2)
     #Fourth for loop iterated O(n) per n in the third
     #which is O(n^3)
-    #Timing: O(n^4) (Cbrice1)
+    #Timing: O(n^4) end (Cbrice1)
     for (p,pid1) in enumerate(pids[:-1]):
         sizesLeft = sizes2Match.copy()
         # Check sequences at indexes that can fit remaining sizes to check
