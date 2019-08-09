@@ -195,7 +195,7 @@ else:
                 allID = sick["all"]    
                 #creates a dictionary to switch from disease code to full name
                 switch = { "a":"Pancreatic cancer", "b":"Breast cancer", "c":"Lung cancer",
-                           "d":" Lymphoma", "e":"Leukemia", "A":"Gastro-reflux", "B":"Hyperlipidemia",
+                           "d":"Lymphoma", "e":"Leukemia", "A":"Gastro-reflux", "B":"Hyperlipidemia",
                            "C":"High blood pressure", "D":"Macular degeneration (any degree)",
                          "all":"All IDs with sequence" }
                                                            
